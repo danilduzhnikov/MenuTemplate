@@ -1,0 +1,127 @@
+{% load menu_tags %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Меню каталога</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        
+        .menu-container {
+            position: relative;
+            width: 200px;
+        }
+        .menu-list, .submenu {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .submenu {
+            display: none; /* Подменю скрыто по умолчанию */
+            margin-left: 20px;
+            width: 250px; /* Устанавливаем ширину подменю */
+        }
+
+        .submenu.expanded {
+            display: block; /* Когда класс "expanded" добавлен, подменю будет отображаться */
+        }
+
+        .menu-item {
+            margin-bottom: 10px;
+        }
+
+        button.submenu-button {
+            background-color: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            padding: 5px 10px;
+            width: 100%;
+        }
+
+        button.submenu-button:hover {
+            background-color: #d0d0d0;
+        }
+        .menu-button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .menu-button:hover {
+            background-color: #0056b3;
+        }
+
+        .menu-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+            background-color: white;
+            border: 1px solid #ccc;
+        }
+
+        .menu-list li {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .menu-list li:hover {
+            background-color: #f1f1f1;
+        }
+
+        .menu-list.expanded {
+            max-height: 300px; /* Достаточно для отображения 5 пунктов */
+        }
+    </style>
+</head>
+<body>
+{% get_menu as menu %}
+<div class="menu-container">
+    <button class="menu-button" onclick="toggleMenu()">Меню каталога</button>
+    <ul id="menuList" class="menu-list">
+        {% for parent, childrens in menu.items %}
+        <li class="menu-item">
+            <button class="submenu-button" onclick="toggleSubMenu('submenu{{ forloop.counter }}')">{{ parent.name }}</button>
+            {% if childrens %}
+            <ul id="submenu{{ forloop.counter }}" class="submenu">
+                {% for children in childrens %}
+                <li>{{ children.name }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+
+<script>
+    function toggleMenu() {
+        var menuList = document.getElementById("menuList");
+        menuList.classList.toggle("expanded");
+    }
+    function toggleSubMenu(id) {
+        var submenuList = document.getElementById(id);  // Получаем подменю по переданному id
+        if (submenuList.style.display === 'none' || submenuList.style.display === '') {
+            submenuList.style.display = 'block';  // Показываем подменю
+        } else {
+            submenuList.style.display = 'none';   // Скрываем подменю
+        }
+    }
+</script>
+
+</body>
+</html>
